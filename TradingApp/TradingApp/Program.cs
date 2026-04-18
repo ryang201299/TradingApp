@@ -1,19 +1,39 @@
-var builder = WebApplication.CreateBuilder(args);
+using TradingApp.Data;
+using TradingApp.Models;
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+using TradingAppContext context = new TradingAppContext();
 
-var app = builder.Build();
+IQueryable<string> accounts =
+    from
+        account in context.Accounts
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    select
+        account.Name;
+
+foreach (string accountName in accounts)
+{ 
+    Console.WriteLine(accountName);
 }
 
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
 
-app.Run();
+//context.SaveChanges();
+
+//var builder = WebApplication.CreateBuilder(args);
+
+//builder.Services.AddControllers();
+//builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddSwaggerGen();
+
+//var app = builder.Build();
+
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+//app.UseHttpsRedirection();
+//app.UseAuthorization();
+//app.MapControllers();
+
+//app.Run();
