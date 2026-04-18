@@ -1,39 +1,35 @@
+using Microsoft.EntityFrameworkCore;
 using TradingApp.Data;
-using TradingApp.Models;
+using TradingApp.Helpers.Controllers;
+using TradingApp.Helpers.Services;
+using TradingApp.Models.Interfaces;
 
-using TradingAppContext context = new TradingAppContext();
+var builder = WebApplication.CreateBuilder(args);
 
-IQueryable<string> accounts =
-    from
-        account in context.Accounts
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
-    select
-        account.Name;
+builder.Services.AddDbContext<TradingAppContext>(options =>
+    options.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=TradingApp;Trusted_Connection=True;TrustServerCertificate=True;")
+);
 
-foreach (string accountName in accounts)
-{ 
-    Console.WriteLine(accountName);
+// Helpers
+builder.Services.AddScoped<IAccountControllerHelper, AccountControllerHelper>();
+
+// Services
+builder.Services.AddScoped<IAccountService, AccountService>();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
 
-//context.SaveChanges();
-
-//var builder = WebApplication.CreateBuilder(args);
-
-//builder.Services.AddControllers();
-//builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
-
-//var app = builder.Build();
-
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
-
-//app.UseHttpsRedirection();
-//app.UseAuthorization();
-//app.MapControllers();
-
-//app.Run();
+app.Run();

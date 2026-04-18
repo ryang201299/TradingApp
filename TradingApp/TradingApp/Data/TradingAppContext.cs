@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
-using TradingApp.Models;
+using TradingApp.Models.Database;
 
 namespace TradingApp.Data;
 public class TradingAppContext : DbContext
@@ -15,8 +14,5 @@ public class TradingAppContext : DbContext
 
     public DbSet<Transaction> Transactions { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=TradingApp;Trusted_Connection=True;TrustServerCertificate=True;");
-    }
+    public TradingAppContext(DbContextOptions<TradingAppContext> options) : base(options) { }
 }
