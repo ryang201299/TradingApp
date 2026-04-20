@@ -86,6 +86,7 @@ public class TransactionController : ControllerBase
                 TransactionId = x.TransactionId,
                 Account = new AccountDto() { AccountId = x.Account.AccountId, Name = x.Account.Name },
                 Security = new SecurityDto() { SecurityId = x.Security.SecurityId, SecurityName = x.Security.SecurityName },
+                TransactionType = new TransactionTypeDto() { TransactionTypeId = x.TransactionType.TransactionTypeId, TypeDescription = x.TransactionType.TypeDescription },
                 SecurityPrice = x.SecurityPrice,
                 Quantity = x.Quantity
             }).ToList();
