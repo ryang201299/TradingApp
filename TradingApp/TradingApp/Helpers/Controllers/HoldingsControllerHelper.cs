@@ -10,15 +10,21 @@ public class HoldingsControllerHelper : IHoldingsControllerHelper
 {
     private readonly ITransactionService _transactionService;
     private readonly ISecurityPriceService _securityPriceService;
+    private readonly IAccountService _accountService;
 
-    public HoldingsControllerHelper(ITransactionService transactionService, ISecurityPriceService securityPriceService)
+    public HoldingsControllerHelper(ITransactionService transactionService, ISecurityPriceService securityPriceService, IAccountService accountService)
     {
         _transactionService = transactionService;
         _securityPriceService = securityPriceService;
+        _accountService = accountService;
     }
 
+    // TODO: Add result pattern later
     public async Task<List<HoldingsPerAccount>> GetHoldingsAsync()
     {
+        // get accounts cash
+        Result<List<Account>> accountsResult = await _accountService.GetAccountsAsync();        
+
         // get all transactions, joined with latest prices
 
         Result<List<Transaction>> transactionsResult = await _transactionService.GetTransactionsAsync();
@@ -42,7 +48,7 @@ public class HoldingsControllerHelper : IHoldingsControllerHelper
                 TotalQuantity = g.Sum(e => e.TransactionType.TransactionTypeId == 1 ? e.Quantity : -e.Quantity )
             }).ToList();
 
-        var joined =
+        var joinedOnSecPrice =
             from
                 groupthing in grouped
 
@@ -58,14 +64,13 @@ public class HoldingsControllerHelper : IHoldingsControllerHelper
             };
 
         // Filter out none held securities
-        var accountHoldingsNotZero = joined.Where(x => x.TotalHeld != 0).ToList();
+        var accountHoldingsNotZero = joinedOnSecPrice.Where(x => x.TotalHeld != 0).ToList();
 
         // group by account and sum of holdings
-
         var accountHoldings = accountHoldingsNotZero.GroupBy(x => x.Account).Select(g => new HoldingsPerAccount()
         { 
             Account = g.Key,
-            Holding = g.Sum(e => e.TotalHeld)
+            Holding = g.Sum(e => e.TotalHeld) + accountsResult.Value.Where(x => x.AccountId == g.Key.AccountId).Select(a => a.Cash).First()
         }).ToList();
 
         return accountHoldings;

@@ -100,12 +100,12 @@ public class TransactionControllerHelper : ITransactionControllerHelper
 
         // check account holds enough quantity to sell requested amount
         // count of buys
-        int countOfBuys = relevantTransactions.Where(x => x.TransactionType.TransactionTypeId == 1).Count();
+        int countOfPurchasedShares = relevantTransactions.Where(x => x.TransactionType.TransactionTypeId == 1).Sum(t => t.Quantity);
 
         // count of sells
-        int countOfSells = relevantTransactions.Where(x => x.TransactionType.TransactionTypeId == 2).Count();
+        int countOfSoldShares = relevantTransactions.Where(x => x.TransactionType.TransactionTypeId == 2).Sum(t => t.Quantity);
 
-        int securitySharesHeld = countOfBuys - countOfSells;
+        int securitySharesHeld = countOfPurchasedShares - countOfSoldShares;
 
         if (securitySharesHeld < request.Quantity)
         {
