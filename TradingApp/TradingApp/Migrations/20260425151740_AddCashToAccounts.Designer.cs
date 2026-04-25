@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TradingApp.Data;
 
@@ -10,9 +11,11 @@ using TradingApp.Data;
 namespace TradingApp.Migrations
 {
     [DbContext(typeof(TradingAppContext))]
-    partial class TradingAppContextModelSnapshot : ModelSnapshot
+    [Migration("20260425151740_AddCashToAccounts")]
+    partial class AddCashToAccounts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

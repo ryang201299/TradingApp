@@ -21,4 +21,8 @@ public interface IAccountService
     Task<Result<Account?>> GetAccountAsync(int id);
 
     Task<Result<int?>> GetAccountIdAsync(string accountName);
+
+    Task<Result> AddCashAsync(Account account, decimal cash);
+
+    Task<Result> WidthdrawCashAsync(Account account, decimal cash);
 }

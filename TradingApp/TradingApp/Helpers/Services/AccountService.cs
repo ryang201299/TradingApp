@@ -97,4 +97,24 @@ public class AccountService : IAccountService
             return Result<int?>.Failure(ex.Message);
         }
     }
+
+    public async Task<Result> AddCashAsync(Account account, decimal cash)
+    {
+        account.Cash += cash;
+        await _context.SaveChangesAsync();
+
+        return Result.Success();
+    }
+
+    public async Task<Result> WidthdrawCashAsync(Account account, decimal cash)
+    {
+        if (cash > account.Cash) 
+        {
+            return Result.Failure("Insufficient cash to cover widthdrawal.");
+        }
+
+        account.Cash -= cash;
+
+        return Result.Success();
+    }
 }

@@ -68,9 +68,41 @@ public class TransactionController : ControllerBase
         }
     }
 
+    [HttpGet]
+    [ProducesResponseType(typeof(List<TransactionDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetTransactions()
+    {
+        try
+        {
+            Result<List<Transaction>> transactionsResult = await _transactionHelper.GetTransactionsAsync();
+
+            if (!transactionsResult.IsSuccess)
+            {
+                return BadRequest(transactionsResult.Error);
+            }
+
+            List<TransactionDto> transactions = transactionsResult.Value!.Select(x => new TransactionDto()
+            {
+                TransactionId = x.TransactionId,
+                Account = new AccountDto() { AccountId = x.Account.AccountId, Name = x.Account.Name, Cash = x.Account.Cash },
+                Security = new SecurityDto() { SecurityId = x.Security.SecurityId, SecurityName = x.Security.SecurityName },
+                TransactionType = new TransactionTypeDto() { TransactionTypeId = x.TransactionType.TransactionTypeId, TypeDescription = x.TransactionType.TypeDescription },
+                SecurityPrice = x.SecurityPrice,
+                Quantity = x.Quantity
+            }).ToList();
+
+            return Ok(transactions);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred retrieving transactions.");
+            return BadRequest(ex);
+        }
+    }
+
     [HttpGet("{accountId:int}")]
     [ProducesResponseType(typeof(List<TransactionDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetTransactions(int accountId)
+    public async Task<IActionResult> GetTransactionsForAccount(int accountId)
     {
         try
         {
@@ -84,7 +116,7 @@ public class TransactionController : ControllerBase
             List<TransactionDto> transactions = transactionsResult.Value!.Select(x => new TransactionDto()
             {
                 TransactionId = x.TransactionId,
-                Account = new AccountDto() { AccountId = x.Account.AccountId, Name = x.Account.Name },
+                Account = new AccountDto() { AccountId = x.Account.AccountId, Name = x.Account.Name, Cash = x.Account.Cash },
                 Security = new SecurityDto() { SecurityId = x.Security.SecurityId, SecurityName = x.Security.SecurityName },
                 TransactionType = new TransactionTypeDto() { TransactionTypeId = x.TransactionType.TransactionTypeId, TypeDescription = x.TransactionType.TypeDescription },
                 SecurityPrice = x.SecurityPrice,

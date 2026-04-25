@@ -9,5 +9,8 @@ namespace TradingApp.Models.DTO.Response
 
         [Required]
         public required string Name { get; set; }
+
+        [Required]
+        public required decimal Cash { get; set; }
     }
 }

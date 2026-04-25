@@ -39,13 +39,11 @@ public class AccountController : ControllerBase
                 return BadRequest(accountsResult.Error);
             }
 
-            return Ok(accountsResult.Value!.Select(x => new List<AccountDto>
+            return Ok(accountsResult.Value!.Select(x => new AccountDto()
             {
-                new AccountDto()
-                {
-                    AccountId = x.AccountId,
-                    Name = x.Name
-                }
+                AccountId = x.AccountId,
+                Name = x.Name,
+                Cash = x.Cash
             }).ToList());
         }
         catch (Exception ex)
@@ -82,7 +80,8 @@ public class AccountController : ControllerBase
             return Ok(new AccountDto()
             {
                 AccountId = accountResult.Value.AccountId,
-                Name = accountResult.Value.Name
+                Name = accountResult.Value.Name,
+                Cash = accountResult.Value.Cash
             });
 
         }

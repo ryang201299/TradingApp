@@ -35,6 +35,7 @@ namespace TradingApp.Controllers
                 return Ok(securityPricesResult.Value!.Select(x => new SecurityPriceDto()
                 {
                     SecurityId = x.SecurityId,
+                    Security = new SecurityDto() { SecurityId = x.Security.SecurityId, SecurityName = x.Security.SecurityName },
                     Price = x.Price
                 }).ToList());
             }

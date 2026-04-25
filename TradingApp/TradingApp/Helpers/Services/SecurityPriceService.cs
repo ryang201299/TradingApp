@@ -22,7 +22,9 @@ public class SecurityPriceService : ISecurityPriceService
         try
         {
             _logger.LogInformation("Retrieving security prices.");
-            List<SecurityPrice> securityPrices = await _context.SecurityPrices.ToListAsync();
+            List<SecurityPrice> securityPrices = await _context.SecurityPrices
+                .Include(x => x.Security)
+                .ToListAsync();
 
             _logger.LogInformation("Retrieved price for `{SecurityCount}` securities.", securityPrices.Count);
             return Result<List<SecurityPrice>>.Success(securityPrices);

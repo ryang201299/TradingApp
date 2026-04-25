@@ -4,6 +4,8 @@ namespace TradingApp.Models.Interfaces;
 
 public interface ITransactionService
 {
+    Task<Result<List<Transaction>>> GetTransactionsAsync();
+
     Task<Result<List<Transaction>>> GetTransactionsAsync(int accountId);
 
     Task<Result> BuySecurityAsync(Transaction transaction);

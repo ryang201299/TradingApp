@@ -17,6 +17,28 @@ public class TransactionService : ITransactionService
         _context = context;
     }
 
+    public async Task<Result<List<Transaction>>> GetTransactionsAsync()
+    {
+        try
+        {
+            _logger.LogInformation("Retrieving transactions.");
+            List<Transaction> transactions = await _context.Transactions
+                .Include(x => x.Account)
+                .Include(x => x.TransactionType)
+                .Include(x => x.Security)
+                .ToListAsync();
+
+            _logger.LogInformation("Retrieved `{TransactionCount}` transactions.", transactions.Count);
+
+            return Result<List<Transaction>>.Success(transactions);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred retrieving transactions.");
+            return Result<List<Transaction>>.Failure(ex.Message);
+        }
+    }
+
     public async Task<Result<List<Transaction>>> GetTransactionsAsync(int accountId)
     {
         try

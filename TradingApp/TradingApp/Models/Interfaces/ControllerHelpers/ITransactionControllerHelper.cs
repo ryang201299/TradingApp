@@ -5,6 +5,7 @@ namespace TradingApp.Models.Interfaces.ControllerHelpers;
 
 public interface ITransactionControllerHelper
 {
+    Task<Result<List<Transaction>>> GetTransactionsAsync();
     Task<Result<List<Transaction>>> GetTransactionsAsync(int accountId);
 
     Task<Result> BuySecurityAsync(TransactionRequestDto request);

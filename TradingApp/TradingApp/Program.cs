@@ -20,6 +20,7 @@ builder.Services.AddScoped<IAccountControllerHelper, AccountControllerHelper>();
 builder.Services.AddScoped<ISecurityControllerHelper, SecurityControllerHelper>();
 builder.Services.AddScoped<ITransactionControllerHelper, TransactionControllerHelper>();
 builder.Services.AddScoped<ISecurityPricesControllerHelper, SecurityPricesControllerHelper>();
+builder.Services.AddScoped<IHoldingsControllerHelper, HoldingsControllerHelper>();
 
 // Services
 builder.Services.AddScoped<IAccountService, AccountService>();
@@ -28,6 +29,16 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<ITransactionTypeService, TransactionTypeService>();
 builder.Services.AddScoped<ISecurityPriceService, SecurityPriceService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowWebApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -35,6 +46,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowWebApp");
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

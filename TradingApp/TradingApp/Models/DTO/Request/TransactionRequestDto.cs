@@ -9,4 +9,7 @@ public class TransactionRequestDto
 
     [Required]
     public int SecurityId { get; set; }
+
+    [Required]
+    public int Quantity { get; set; }
 }
